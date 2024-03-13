@@ -21,16 +21,11 @@ class Pacman(Entity):
 
     #Select Goal 
     def setGoal(self):
-        dist = 999999
-        x = 0
-        for i, gst in enumerate(self.ghosts):
-            ndist = (self.position - gst.position).magnitudeSquared()
-            if ndist < dist:
-                x = i
-                dist = ndist
-        
-        self.goal = self.position - (self.ghosts[x].position - self.position)
-        print(f"{self.goal}")
+        distances = []
+        for gst in self.ghosts:
+            distances.append((self.position - gst.position).magnitudeSquared())
+        self.goal = self.position - (self.ghosts[distances.index(min(distances))].position - self.position)
+        print(distances.index(min(distances)))
 
     def setGhosts(self, ghosts):
         self.ghosts = ghosts
