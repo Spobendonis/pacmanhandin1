@@ -32,6 +32,9 @@ class Vector2(object):
                 return True
         return False
 
+    def normalized(self):
+        return self.__div__(self.magnitude())
+
     def magnitudeSquared(self):
         return self.x**2 + self.y**2
 

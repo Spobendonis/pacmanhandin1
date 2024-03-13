@@ -1,3 +1,4 @@
+import numpy as np
 import pygame
 from pygame.locals import *
 from vector import Vector2
@@ -7,14 +8,33 @@ from sprites import PacmanSprites
 
 class Pacman(Entity):
     def __init__(self, node):
-        Entity.__init__(self, node )
-        self.name = PACMAN    
+        Entity.__init__(self, node)
+        self.ghosts = None
+        self.name = PACMAN
         self.color = YELLOW
         self.direction = LEFT
         self.setBetweenNodes(LEFT)
+        self.directionMethod = self.goalDirection
+        self.goal = Vector2()
         self.alive = True
         self.sprites = PacmanSprites(self)
 
+    #Select Goal 
+    def setGoal(self):
+        dist = 999999
+        x = 0
+        for i, gst in enumerate(self.ghosts):
+            ndist = (self.position - gst.position).magnitudeSquared()
+            if ndist < dist:
+                x = i
+                dist = ndist
+        
+        self.goal = self.position - (self.ghosts[x].position - self.position)
+        print(f"{self.goal}")
+
+    def setGhosts(self, ghosts):
+        self.ghosts = ghosts
+ 
     def reset(self):
         Entity.reset(self)
         self.direction = LEFT
@@ -27,10 +47,11 @@ class Pacman(Entity):
         self.alive = False
         self.direction = STOP
 
-    def update(self, dt):	
+    def update(self, dt):
         self.sprites.update(dt)
+        self.setGoal()
         self.position += self.directions[self.direction]*self.speed*dt
-        direction = self.getValidKey()
+        direction = self.directionMethod(self.validDirections())
         if self.overshotTarget():
             self.node = self.target
             if self.node.neighbors[PORTAL] is not None:
