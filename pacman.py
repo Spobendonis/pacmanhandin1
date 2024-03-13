@@ -14,7 +14,7 @@ class Pacman(Entity):
         self.color = YELLOW
         self.direction = LEFT
         self.setBetweenNodes(LEFT)
-        self.directionMethod = self.goalDirection
+        self.directionMethod = self.oppositeGoalDirection
         self.goal = Vector2()
         self.alive = True
         self.sprites = PacmanSprites(self)
@@ -24,8 +24,7 @@ class Pacman(Entity):
         distances = []
         for gst in self.ghosts:
             distances.append((self.position - gst.position).magnitudeSquared())
-        self.goal = self.position - (self.ghosts[distances.index(min(distances))].position - self.position)
-        print(distances.index(min(distances)))
+        self.goal = (self.ghosts[distances.index(min(distances))].position)
 
     def setGhosts(self, ghosts):
         self.ghosts = ghosts
@@ -44,7 +43,7 @@ class Pacman(Entity):
 
     def update(self, dt):
         self.sprites.update(dt)
-        self.setGoal()
+        self.setGoal2()
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.directionMethod(self.validDirections())
         if self.overshotTarget():

@@ -95,6 +95,14 @@ class Entity(object):
             distances.append(vec.magnitudeSquared())
         index = distances.index(min(distances))
         return directions[index]
+    
+    def oppositeGoalDirection(self, directions):
+        distances = []
+        for direction in directions:
+            vec = self.node.position  + self.directions[direction]*TILEWIDTH - self.goal
+            distances.append(vec.magnitudeSquared())
+        index = distances.index(max(distances))
+        return directions[index]
 
     def setStartNode(self, node):
         self.node = node
